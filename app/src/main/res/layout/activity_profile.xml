@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+  <de.hdodenhof.circleimageview.CircleImageView
+    android:id="@+id/imageView"
+    android:layout_marginTop="16dp"
+    android:padding="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_width="140dp"
+    android:layout_height="140dp"
+    android:src="@drawable/my_photo"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+  <TextView
+    android:id="@+id/name"
+    android:text="@string/muchammad_romadona"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="23sp"
+    android:textStyle="bold"
+    android:textAlignment="center"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/imageView"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+  <TextView
+    android:id="@+id/email"
+    android:layout_width="match_parent"
+    android:text="@string/romadonadoni03_gmail_com"
+    android:layout_height="wrap_content"
+    android:paddingBottom="20dp"
+    android:textSize="11sp"
+    android:textAlignment="center"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/name"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="@+id/github" />
+
+  <TextView
+    android:id="@+id/github"
+    android:text="@string/github"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:linksClickable="true"
+    android:autoLink="web"
+    android:textAlignment="center"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/email"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+  <TextView
+    android:id="@+id/artstation"
+    android:text="@string/artstation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:linksClickable="true"
+    android:autoLink="web"
+    android:textAlignment="center"
+    android:paddingBottom="10dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/github"
+    app:layout_constraintEnd_toEndOf="parent" />
+
+  <com.google.android.material.tabs.TabLayout
+    android:id="@+id/tabs"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toBottomOf="@+id/artstation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

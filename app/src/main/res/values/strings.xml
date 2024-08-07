@@ -1,0 +1,32 @@
+<resources>
+  <string name="app_name">Submission Aplikasi Story App</string>
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="login">Login</string>
+  <string name="signup">Sign up</string>
+  <string name="title_welcome_page">Welcome to Dicoding Story App</string>
+  <string name="message_welcome_page">Discover the latest stories from around the world</string>
+  <string name="password">Insert Your Password</string>
+  <string name="email">Insert Your Email</string>
+  <string name="title_login_page">Login</string>
+  <string name="message_login_page">Please login to continue</string>
+  <string name="title_signup_page">Register</string>
+  <string name="message_register_page">Please register to continue</string>
+  <string name="name">Insert Your Name</string>
+  <string name="settings">Settings</string>
+  <string name="profile">Profile</string>
+  <string name="logout">Logout</string>
+  <string name="detail_photo">Detail Photo</string>
+  <string name="camera">Camera</string>
+  <string name="description">Insert Description</string>
+  <string name="gallery">Gallery</string>
+  <string name="upload">Upload</string>
+  <string name="preview_image">Preview Image</string>
+  <string name="fab_content_desc">Fab Add</string>
+  <string name="standard_icon_btn_desc">Capture Button</string>
+  <string name="muchammad_romadona">Muchammad Romadona</string>
+  <string name="romadonadoni03_gmail_com">romadonadoni03@gmail.com</string>
+  <string name="github">My Github : github.com/dontkeep</string>
+  <string name="artstation">My Artstation : artstation.com/loyaltyyy</string>
+  <string name="logo">Logo</string>
+</resources>
