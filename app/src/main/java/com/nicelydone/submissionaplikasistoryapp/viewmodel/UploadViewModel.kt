@@ -28,7 +28,13 @@ class UploadViewModel @Inject constructor(private val apiServices: ApiServices, 
    val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()
    private val token = sharedPreferences.getString("token", "")
 
-   fun uploadImage(description: String, imageUri: Uri?, context: Context) {
+   fun uploadImage(
+      description: String,
+      imageUri: Uri?,
+      latitude: Double?,
+      longitude: Double?,
+      context: Context
+   ) {
       viewModelScope.launch {
          _uploadState.value = UploadState.Loading
          if (imageUri == null) {
@@ -38,7 +44,18 @@ class UploadViewModel @Inject constructor(private val apiServices: ApiServices, 
          try {
             val descriptionPart = description.toRequestBody("text/plain".toMediaTypeOrNull())
             val imagePart = prepareFilePart("photo", imageUri, context)
-            val response = apiServices.userUpload("Bearer $token", descriptionPart, imagePart)
+
+            val latPart = latitude?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+            val lonPart = longitude?.toString()?.toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val response = apiServices.userUpload(
+               "Bearer $token",
+               descriptionPart,
+               imagePart,
+               latPart,
+               lonPart
+            )
+
             if (response.error == true) {
                _uploadState.value = UploadState.Error(response.message ?: "Upload failed")
             } else {

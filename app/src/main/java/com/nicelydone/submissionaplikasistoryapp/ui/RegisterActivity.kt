@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
@@ -57,7 +56,6 @@ class RegisterActivity : AppCompatActivity() {
             finish()
          }.onFailure {
             Toast.makeText(this, "Registration failed: ${it.message}", Toast.LENGTH_SHORT).show()
-            Log.e("RegisterActivity", "Registration failed", it)
          }
       }
 

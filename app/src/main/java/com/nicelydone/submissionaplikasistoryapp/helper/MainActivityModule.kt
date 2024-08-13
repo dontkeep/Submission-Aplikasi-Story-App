@@ -34,7 +34,6 @@ object MainActivityModule {
       )
    }
 
-   @JvmStatic
    @Provides
    @ZeroArgConstructor
    fun provideSharedPreferencesForZeroArgConstructor(@ApplicationContext context: Context):

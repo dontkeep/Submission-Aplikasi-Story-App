@@ -5,11 +5,14 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
@@ -18,9 +21,11 @@ import com.nicelydone.submissionaplikasistoryapp.databinding.ActivityMainBinding
 import com.nicelydone.submissionaplikasistoryapp.helper.MainActivityModule
 import com.nicelydone.submissionaplikasistoryapp.helper.MainActivityModule.provideSharedPreferencesForZeroArgConstructor
 import com.nicelydone.submissionaplikasistoryapp.helper.MyApplication
+import com.nicelydone.submissionaplikasistoryapp.ui.adapter.LoadingStateAdapter
 import com.nicelydone.submissionaplikasistoryapp.ui.adapter.StoryListAdapter
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.StoryListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -32,7 +37,8 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
    private val viewModel: StoryListViewModel by viewModels()
 
    private val uploadActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-      ActivityResultContracts.StartActivityForResult()) { result ->
+      ActivityResultContracts.StartActivityForResult()
+   ) { result ->
       if (result.resultCode == RESULT_OK) {
          refreshStories()
       }
@@ -48,7 +54,10 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
       val layoutManager = LinearLayoutManager(this)
       binding.rvStories.layoutManager = layoutManager
       adapter = StoryListAdapter()
-      binding.rvStories.adapter = adapter
+      val loadingStateAdapter = LoadingStateAdapter { adapter.retry() }
+      binding.rvStories.adapter = adapter.withLoadStateFooter(
+         footer = loadingStateAdapter
+      )
 
       refreshStories()
 
@@ -56,16 +65,29 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
          val intent = Intent(this, UploadActivity::class.java)
          uploadActivityResultLauncher.launch(intent)
       }
-
-      viewModel.isLoading.observe(this) { isLoading ->
-         binding.loadingAnimation.visibility = if (isLoading) View.VISIBLE else View.GONE
-      }
    }
 
    private fun refreshStories() {
-      viewModel.getStories()
-      viewModel.stories.observe(this) { stories ->
-         adapter.submitList(stories)
+      viewModel.story.observe(this, Observer { pagingData ->
+         lifecycleScope.launch {
+            adapter.submitData(pagingData)
+         }
+      })
+
+      lifecycleScope.launch {
+         adapter.loadStateFlow.collect { loadState ->
+            val errorState = loadState.source.append as? LoadState.Error
+               ?: loadState.source.prepend as? LoadState.Error
+               ?: loadState.append as? LoadState.Error
+               ?: loadState.prepend as? LoadState.Error
+            errorState?.let {
+               Toast.makeText(
+                  this@MainActivity,
+                  "Please Connect to Internet",
+                  Toast.LENGTH_LONG
+               ).show()
+            }
+         }
       }
    }
 
@@ -83,7 +105,7 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
          }
          R.id.logoutButton -> {
             val sharedPreferences = EncryptedSharedPreferences.create(
-         "session_preferences",
+               "session_preferences",
                MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
                applicationContext,
                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
@@ -97,7 +119,13 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
             startActivity(intent)
             finish()
             true
-         }else -> super.onOptionsItemSelected(item)
+         }
+         R.id.action_open_map -> {
+            val intent = Intent(this, MapActivity::class.java)
+            startActivity(intent)
+            true
+         }
+         else -> super.onOptionsItemSelected(item)
       }
    }
 

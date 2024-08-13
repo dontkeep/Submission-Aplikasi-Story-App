@@ -33,6 +33,11 @@ android {
          )
       }
    }
+
+   testOptions {
+      unitTests.isReturnDefaultValues = true
+   }
+
    compileOptions {
       sourceCompatibility = JavaVersion.VERSION_1_8
       targetCompatibility = JavaVersion.VERSION_1_8
@@ -43,25 +48,50 @@ android {
 }
 
 dependencies {
-   val camerax_version = "1.4.0-beta02"
-   implementation("androidx.camera:camera-core:${camerax_version}")
-   implementation("androidx.camera:camera-camera2:${camerax_version}")
-   implementation("androidx.camera:camera-lifecycle:$camerax_version")
-   implementation("androidx.camera:camera-view:$camerax_version")
-   implementation("androidx.camera:camera-extensions:$camerax_version")
+   implementation(libs.androidx.room.ktx)
+   implementation(libs.play.services.location)
 
-   implementation("com.google.dagger:hilt-android:2.48")
-   kapt("com.google.dagger:hilt-android-compiler:2.48")
-   implementation("androidx.activity:activity-ktx:1.9.1")
+   implementation(libs.androidx.camera.core)
+   implementation(libs.androidx.camera.camera2)
+   implementation(libs.androidx.camera.lifecycle)
+   implementation(libs.androidx.camera.view)
+   implementation(libs.androidx.camera.extensions)
 
-   implementation("com.github.bumptech.glide:glide:4.16.0")
-   implementation("de.hdodenhof:circleimageview:3.1.0")
+   implementation(libs.hilt.android)
+   kapt(libs.hilt.android.compiler)
+   implementation(libs.androidx.activity.ktx)
 
-   implementation("com.squareup.retrofit2:retrofit:2.11.0")
-   implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-   implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+   implementation(libs.glide)
+   implementation(libs.circleimageview)
 
-   implementation("com.airbnb.android:lottie:6.4.1")
+   implementation(libs.retrofit)
+   implementation(libs.converter.gson)
+   implementation(libs.logging.interceptor)
+
+   implementation(libs.lottie)
+
+   implementation(libs.androidx.room.runtime)
+   kapt(libs.androidx.room.compiler)
+   implementation(libs.androidx.room.paging)
+
+   implementation(libs.androidx.paging.runtime.ktx)
+
+   implementation(libs.play.services.maps)
+
+   testImplementation(libs.androidx.paging.testing)
+   testImplementation(libs.junit)
+
+   testImplementation(libs.androidx.core)
+
+   androidTestImplementation(libs.androidx.core.testing)
+   androidTestImplementation(libs.kotlinx.coroutines.test)
+   testImplementation(libs.androidx.core.testing)
+   testImplementation(libs.kotlinx.coroutines.test)
+   testImplementation(libs.mockito.core)
+   testImplementation(libs.mockito.inline)
+   testImplementation(libs.androidx.paging.common.ktx)
+   testImplementation(libs.androidx.core.testing.v220)
+   implementation(libs.androidx.lifecycle.livedata.ktx)
 
    implementation(libs.androidx.security.crypto.ktx.v110alpha06)
    implementation(libs.androidx.core.ktx)

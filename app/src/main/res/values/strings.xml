@@ -29,4 +29,9 @@
   <string name="github">My Github : github.com/dontkeep</string>
   <string name="artstation">My Artstation : artstation.com/loyaltyyy</string>
   <string name="logo">Logo</string>
+  <string name="loading">Loading...</string>
+  <string name="retry">Retry</string>
+  <string name="error_message">Error</string>
+  <string name="open_map">Open Map</string>
+  <string name="use_current_location">Upload with your location</string>
 </resources>

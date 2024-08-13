@@ -23,10 +23,10 @@ class DetailActivity : AppCompatActivity() {
 
       detailViewModel.storyDetail.observe(this) { story ->
          Glide.with(this)
-            .load(story.photoUrl) // Use photoUrl from StoryDetail
+            .load(story?.photoUrl) // Use photoUrl from StoryEntity
             .into(binding.ivDetailPhoto)
-         binding.tvDetailTitle.text = story.name
-         binding.tvDetailDescription.text = story.description
+         binding.tvDetailTitle.text = story?.name
+         binding.tvDetailDescription.text = story?.description
       }
    }
 }

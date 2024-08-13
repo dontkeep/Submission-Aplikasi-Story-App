@@ -3,9 +3,11 @@ package com.nicelydone.submissionaplikasistoryapp.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -17,8 +19,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import com.nicelydone.submissionaplikasistoryapp.databinding.ActivityUploadBinding
-import com.nicelydone.submissionaplikasistoryapp.viewmodel.StoryListViewModel
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadState
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +34,27 @@ class UploadActivity : AppCompatActivity() {
    private lateinit var binding: ActivityUploadBinding
    private var currentImageUri: Uri? = null
    private val viewModel: UploadViewModel by viewModels()
+
+   private var currentLocation: Location? = null
+
+   private val locationRequest by lazy {
+      LocationRequest.create().apply {
+         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+         interval = 1000
+      }
+   }
+
+   private val fusedLocationProviderClient by lazy {
+      LocationServices.getFusedLocationProviderClient(this)
+   }
+
+   private val locationCallback = object : LocationCallback() {
+      override fun onLocationResult(locationResult: LocationResult) {
+         super.onLocationResult(locationResult)
+         currentLocation = locationResult.lastLocation
+         fusedLocationProviderClient.removeLocationUpdates(this)
+      }
+   }
 
    private val cameraActivityResultLauncher = registerForActivityResult(
       ActivityResultContracts.StartActivityForResult()
@@ -47,6 +73,14 @@ class UploadActivity : AppCompatActivity() {
       binding = ActivityUploadBinding.inflate(layoutInflater)
       setContentView(binding.root)
 
+      binding.checkboxLocation.setOnCheckedChangeListener { _, isChecked ->
+         if (isChecked) {
+            checkLocationPermission()
+         } else {
+            currentLocation = null
+         }
+      }
+
       binding.btnGallery.setOnClickListener {
          checkAndRequestPermissions()
       }
@@ -57,7 +91,9 @@ class UploadActivity : AppCompatActivity() {
 
       binding.btnUpload.setOnClickListener {
          val description = binding.etDescription.text.toString()
-         viewModel.uploadImage(description, currentImageUri, this)
+         val lat = currentLocation?.latitude
+         val lon = currentLocation?.longitude
+         viewModel.uploadImage(description, currentImageUri, lat, lon, this)
       }
 
       lifecycleScope.launch {
@@ -76,6 +112,7 @@ class UploadActivity : AppCompatActivity() {
                }
 
                is UploadState.Success -> {
+                  showLoadingState(true)
                   binding.loadingAnimation.visibility = View.GONE
                   Toast.makeText(this@UploadActivity, "Upload successful", Toast.LENGTH_SHORT).show()
                   val resultIntent = Intent()
@@ -84,12 +121,50 @@ class UploadActivity : AppCompatActivity() {
                }
 
                is UploadState.Error -> {
+                  showLoadingState(false)
                   binding.loadingAnimation.visibility = View.GONE
                   Toast.makeText(this@UploadActivity, state.message, Toast.LENGTH_SHORT).show()
                   finish()
                }
             }
          }
+      }
+   }
+
+   private fun showLoadingState(isLoading: Boolean) {
+      binding.loadingAnimation.visibility = if (isLoading) View.VISIBLE else View.GONE
+      binding.btnCamera.isEnabled = !isLoading
+      binding.btnGallery.isEnabled = !isLoading
+      binding.btnUpload.isEnabled = !isLoading
+      binding.etDescription.isEnabled = !isLoading
+   }
+
+   private fun checkLocationPermission() {
+      if (ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.ACCESS_FINE_LOCATION
+         ) != PackageManager.PERMISSION_GRANTED
+      ) {
+         ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+            REQUEST_CODE_LOCATION_PERMISSION
+         )
+      } else {
+         getCurrentLocation()
+      }
+   }
+
+   private fun getCurrentLocation() {
+      try {
+         fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+         )
+      } catch (e: SecurityException) {
+         e.printStackTrace()
+         Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show()
       }
    }
 
@@ -151,6 +226,13 @@ class UploadActivity : AppCompatActivity() {
    ) {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults)
       when (requestCode) {
+         REQUEST_CODE_LOCATION_PERMISSION -> {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+               getCurrentLocation()
+            } else {
+               Toast.makeText(this, "Location Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+         }
          REQUEST_CODE_PERMISSIONS -> {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                startGallery()
@@ -173,5 +255,6 @@ class UploadActivity : AppCompatActivity() {
       private const val TAG = "UploadActivity"
       private const val REQUEST_CODE_PERMISSIONS = 1001
       private const val REQUEST_CODE_CAMERA_PERMISSION = 1002
+      private const val REQUEST_CODE_LOCATION_PERMISSION = 1003
    }
 }

@@ -2,6 +2,7 @@ package com.nicelydone.submissionaplikasistoryapp.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -22,23 +23,26 @@ class SplashActivity : AppCompatActivity() {
 
       lifecycleScope.launch {
          delay(2000)
-         val sharedPreferences = EncryptedSharedPreferences.create(
-            "session_preferences",
-            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-            applicationContext,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-         )
+         try {
+            val sharedPreferences = EncryptedSharedPreferences.create(
+               "session_preferences",
+               MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+               applicationContext,
+               EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+               EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+            val isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false)
 
-         val isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false)
+            if (isLoggedIn) {
+               startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+            } else {
+               startActivity(Intent(this@SplashActivity, WelcomeActivity::class.java))
+            }
 
-         if (isLoggedIn) {
-            startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-         } else {
-            startActivity(Intent(this@SplashActivity, WelcomeActivity::class.java))
+            finish()
+         } catch (e: Exception) {
+            Log.e("SplashActivity", "Error accessing SharedPreferences", e)
          }
-
-         finish()
       }
    }
 }

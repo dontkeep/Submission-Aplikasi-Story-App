@@ -5,33 +5,44 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.nicelydone.submissionaplikasistoryapp.model.connection.ApiServices
 import com.nicelydone.submissionaplikasistoryapp.model.connection.responses.ListStoryItem
+import com.nicelydone.submissionaplikasistoryapp.model.room.entity.StoryEntity
+import com.nicelydone.submissionaplikasistoryapp.model.room.repository.StoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class StoryListViewModel @Inject constructor(private val apiServices: ApiServices, private val sharedPreferences: SharedPreferences) : ViewModel() {
-   private val _stories = MutableLiveData<List<ListStoryItem>>()
-   val stories: LiveData<List<ListStoryItem>> = _stories
+class StoryListViewModel @Inject constructor(
+   private val storyRepository: StoryRepository,
+   private val apiServices: ApiServices,
+   private val sharedPreferences: SharedPreferences
+) : ViewModel() {
 
-   private val _isLoading = MutableLiveData<Boolean>()
-   val isLoading: LiveData<Boolean> = _isLoading
+   private val token: String
+      get() = sharedPreferences.getString("token", "") ?: ""
 
-   fun getStories() {
-      _isLoading.value = true
-      val token = sharedPreferences.getString("token", null) ?: ""
+   val story: LiveData<PagingData<StoryEntity>> = storyRepository.getStory(token).cachedIn(viewModelScope).asLiveData()
+
+   fun fetchStoriesWithLocation(): LiveData<List<ListStoryItem>?> {
+      val liveData = MutableLiveData<List<ListStoryItem>?>()
       viewModelScope.launch {
          try {
-            val response = apiServices.getAllStories("Bearer $token")
-            _stories.value = response.listStory?.filterNotNull() ?: emptyList()
+            val response = apiServices.getStoriesWithLocation("Bearer " + token)
+            if (response.isSuccessful) {
+               liveData.postValue(response.body()?.listStory as List<ListStoryItem>?)
+            } else {
+               Log.e("StoryListViewModel", "Error fetching stories with location: ${response.code()}")
+            }
          } catch (e: Exception) {
-            Log.d("StoryListViewModel", "Error fetching stories: ${e.message}")
-         } finally {
-            _isLoading.value = false
+            Log.e("StoryListViewModel", "Error fetching stories with location", e)
          }
       }
+      return liveData
    }
 }
