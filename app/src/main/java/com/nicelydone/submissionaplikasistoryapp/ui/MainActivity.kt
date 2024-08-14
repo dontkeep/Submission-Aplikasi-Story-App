@@ -40,7 +40,14 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
    private val uploadActivityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
       ActivityResultContracts.StartActivityForResult()
    ) { result ->
-      Log.d("MainActivity", "Upload Result: $result")
+      if (result.resultCode == RESULT_OK) {
+         refreshStories()
+         binding.rvStories.post {
+            binding.rvStories.smoothScrollToPosition(0)
+         }
+      } else {
+         Log.d("MainActivity", "Upload failed or was cancelled")
+      }
    }
 
    override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,10 +138,5 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
          }
          else -> super.onOptionsItemSelected(item)
       }
-   }
-
-   override fun onResume() {
-      super.onResume()
-      refreshStories()
    }
 }

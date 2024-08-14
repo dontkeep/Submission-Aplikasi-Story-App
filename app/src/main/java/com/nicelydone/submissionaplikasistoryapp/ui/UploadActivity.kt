@@ -35,7 +35,6 @@ class UploadActivity : AppCompatActivity() {
    private lateinit var binding: ActivityUploadBinding
    private var currentImageUri: Uri? = null
    private val viewModel: UploadViewModel by viewModels()
-   private val storyListViewModel: StoryListViewModel by viewModels()
 
    private var currentLocation: Location? = null
 
@@ -117,8 +116,11 @@ class UploadActivity : AppCompatActivity() {
                   showLoadingState(true)
                   binding.loadingAnimation.visibility = View.GONE
                   Toast.makeText(this@UploadActivity, "Upload successful", Toast.LENGTH_SHORT).show()
+                  val intent = Intent(this@UploadActivity, MainActivity::class.java).apply {
+                     addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                  }
                   setResult(RESULT_OK)
-                  finish()
+                  startActivity(intent)
                }
 
                is UploadState.Error -> {
