@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.nicelydone.submissionaplikasistoryapp.databinding.ActivityUploadBinding
+import com.nicelydone.submissionaplikasistoryapp.viewmodel.StoryListViewModel
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadState
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,6 +35,7 @@ class UploadActivity : AppCompatActivity() {
    private lateinit var binding: ActivityUploadBinding
    private var currentImageUri: Uri? = null
    private val viewModel: UploadViewModel by viewModels()
+   private val storyListViewModel: StoryListViewModel by viewModels()
 
    private var currentLocation: Location? = null
 
@@ -98,7 +100,7 @@ class UploadActivity : AppCompatActivity() {
 
       lifecycleScope.launch {
          viewModel.uploadState.collect { state ->
-            when (state) {
+            when(state) {
                UploadState.Idle -> {
                   // Do nothing
                }
@@ -115,8 +117,7 @@ class UploadActivity : AppCompatActivity() {
                   showLoadingState(true)
                   binding.loadingAnimation.visibility = View.GONE
                   Toast.makeText(this@UploadActivity, "Upload successful", Toast.LENGTH_SHORT).show()
-                  val resultIntent = Intent()
-                  setResult(RESULT_OK, resultIntent)
+                  setResult(RESULT_OK)
                   finish()
                }
 
@@ -124,7 +125,6 @@ class UploadActivity : AppCompatActivity() {
                   showLoadingState(false)
                   binding.loadingAnimation.visibility = View.GONE
                   Toast.makeText(this@UploadActivity, state.message, Toast.LENGTH_SHORT).show()
-                  finish()
                }
             }
          }

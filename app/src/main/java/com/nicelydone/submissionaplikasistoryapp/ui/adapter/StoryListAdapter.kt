@@ -21,8 +21,8 @@ class StoryListAdapter: PagingDataAdapter<StoryEntity, StoryListAdapter.ViewHold
                .load(story.photoUrl)
                .into(ivItemPhoto)
             tvItemName.text = story.name
-            val shortDescription = if (story.description?.length ?: 0 > 50) {
-               "${story.description?.substring(0, 50)}..."
+            val shortDescription = if ((story.description.length ?: 0) > 50) {
+               "${story.description.substring(0, 50)}..."
             } else {
                story.description
             }

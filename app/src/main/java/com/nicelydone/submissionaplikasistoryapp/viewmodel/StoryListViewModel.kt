@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -14,6 +13,7 @@ import com.nicelydone.submissionaplikasistoryapp.model.connection.responses.List
 import com.nicelydone.submissionaplikasistoryapp.model.room.entity.StoryEntity
 import com.nicelydone.submissionaplikasistoryapp.model.room.repository.StoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,8 +26,22 @@ class StoryListViewModel @Inject constructor(
 
    private val token: String
       get() = sharedPreferences.getString("token", "") ?: ""
+   private val _stories = MutableLiveData<PagingData<StoryEntity>>()
+   val stories: LiveData<PagingData<StoryEntity>> get() = _stories
 
-   val story: LiveData<PagingData<StoryEntity>> = storyRepository.getStory(token).cachedIn(viewModelScope).asLiveData()
+   init {
+      refreshStories()
+   }
+
+   fun refreshStories() {
+      viewModelScope.launch {
+         storyRepository.getStory(token).cachedIn(viewModelScope).collectLatest { pagingData ->
+            _stories.postValue(pagingData)
+
+            Log.d("StoryListViewModel", "Stories refreshed: $pagingData")
+         }
+      }
+   }
 
    fun fetchStoriesWithLocation(): LiveData<List<ListStoryItem>?> {
       val liveData = MutableLiveData<List<ListStoryItem>?>()

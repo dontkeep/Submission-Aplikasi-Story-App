@@ -1,6 +1,5 @@
 package com.nicelydone.submissionaplikasistoryapp.model.room.repository
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -16,8 +15,9 @@ import javax.inject.Singleton
 @Singleton
 class StoryRepository @Inject constructor(
    private val itemDatabase: ItemDatabase,
-   private val apiService: ApiServices
+   private val apiService: ApiServices,
 ) {
+
    @OptIn(ExperimentalPagingApi::class)
    fun getStory(token: String): Flow<PagingData<StoryEntity>> {
       val pagingSourceFactory = { itemDatabase.storyDao().getStories() }

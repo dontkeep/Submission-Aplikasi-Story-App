@@ -25,7 +25,7 @@ class StoryRemoteMediator(private val database: ItemDatabase, private val apiSer
       val page = when(loadType) {
          LoadType.REFRESH -> {
             val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
-            remoteKeys?.nextKey?.minus(1) ?: INITIAL_PAGE_INDEX
+               remoteKeys?.nextKey?.minus(1) ?: INITIAL_PAGE_INDEX
          }
          LoadType.PREPEND -> {
             val remoteKeys = getRemoteKeyForFirstItem(state)
