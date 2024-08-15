@@ -29,34 +29,35 @@ class StoryListViewModel @Inject constructor(
    private val _stories = MutableLiveData<PagingData<StoryEntity>>()
    val stories: LiveData<PagingData<StoryEntity>> get() = _stories
 
+   private val _storyWithLocation = MutableLiveData<List<ListStoryItem?>?>()
+   val storyWithLocation: LiveData<List<ListStoryItem?>?> get() = _storyWithLocation
+
+
    init {
       refreshStories()
+      fetchStoriesWithLocation()
    }
 
    fun refreshStories() {
       viewModelScope.launch {
          storyRepository.getStory(token).cachedIn(viewModelScope).collectLatest { pagingData ->
             _stories.postValue(pagingData)
-
-            Log.d("StoryListViewModel", "Stories refreshed: $pagingData")
          }
       }
    }
 
-   fun fetchStoriesWithLocation(): LiveData<List<ListStoryItem>?> {
-      val liveData = MutableLiveData<List<ListStoryItem>?>()
+   fun fetchStoriesWithLocation() {
       viewModelScope.launch {
          try {
-            val response = apiServices.getStoriesWithLocation("Bearer " + token)
+            val response = apiServices.getStoriesWithLocation("Bearer $token")
             if (response.isSuccessful) {
-               liveData.postValue(response.body()?.listStory as List<ListStoryItem>?)
+               _storyWithLocation.postValue(response.body()?.listStory)
             } else {
-               Log.e("StoryListViewModel", "Error fetching stories with location: ${response.code()}")
+               _storyWithLocation.postValue(null)
             }
          } catch (e: Exception) {
-            Log.e("StoryListViewModel", "Error fetching stories with location", e)
+            _storyWithLocation.postValue(null)
          }
       }
-      return liveData
    }
 }

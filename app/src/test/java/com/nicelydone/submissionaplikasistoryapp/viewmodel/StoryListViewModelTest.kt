@@ -76,13 +76,7 @@ class StoryListViewModelTest {
 
       assertNotNull(differ.snapshot())
       assertEquals(dummyStories.size, differ.snapshot().size)
-      assertEquals(dummyStories.first().id, differ.snapshot().firstOrNull()?.id)
-      assertEquals(dummyStories.first().name, differ.snapshot().firstOrNull()?.name)
-      assertEquals(dummyStories.first().description, differ.snapshot().firstOrNull()?.description)
-      assertEquals(dummyStories.first().photoUrl, differ.snapshot().firstOrNull()?.photoUrl)
-      assertEquals(dummyStories.first().createdAt, differ.snapshot().firstOrNull()?.createdAt)
-      assertEquals(dummyStories.first().lat, differ.snapshot().firstOrNull()?.lat)
-      assertEquals(dummyStories.first().lon, differ.snapshot().firstOrNull()?.lon)
+      assertEquals(dummyStories.first(), differ.snapshot().firstOrNull())
    }
 
    @Test

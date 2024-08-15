@@ -1,6 +1,7 @@
 package com.nicelydone.submissionaplikasistoryapp.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
@@ -75,16 +76,24 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
       }
    }
 
+   @SuppressLint("DefaultLocale")
    private fun observeStories() {
-      viewModel.fetchStoriesWithLocation().observe(this) { stories ->
+      viewModel.storyWithLocation.observe(this) { stories ->
          map.clear()
          stories?.forEach { story ->
-            story.lat?.let { lat ->
-               story.lon?.let { lon ->
-                  val location = LatLng(lat, lon)
-                  map.addMarker(
-                     MarkerOptions().position(location).title(story.name ?: "Story Location").snippet(story.description)
-                  )
+            if (story != null) {
+               story.lat?.let { lat ->
+                  story.lon?.let { lon ->
+                     val roundedLat = String.format("%.7f", lat).toDouble()
+                     val roundedLon = String.format("%.7f", lon).toDouble()
+                     val location = LatLng(roundedLat, roundedLon)
+                     map.addMarker(
+                        MarkerOptions()
+                           .position(location)
+                           .title(story.name ?: "Story Location")
+                           .snippet(story.description)
+                     )
+                  }
                }
             }
          }
