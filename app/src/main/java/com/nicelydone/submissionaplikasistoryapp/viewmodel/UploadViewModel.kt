@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nicelydone.submissionaplikasistoryapp.model.connection.ApiServices
@@ -27,7 +26,11 @@ import java.io.FileOutputStream
 import javax.inject.Inject
 
 @HiltViewModel
-class UploadViewModel @Inject constructor(private val storyRepository: StoryRepository, private val apiServices: ApiServices, sharedPreferences: SharedPreferences): ViewModel() {
+class UploadViewModel @Inject constructor(
+   private val storyRepository: StoryRepository,
+   private val apiServices: ApiServices,
+   sharedPreferences: SharedPreferences
+) : ViewModel() {
 
    private val _uploadState = MutableStateFlow<UploadState>(UploadState.Idle)
    val uploadState: StateFlow<UploadState> = _uploadState.asStateFlow()

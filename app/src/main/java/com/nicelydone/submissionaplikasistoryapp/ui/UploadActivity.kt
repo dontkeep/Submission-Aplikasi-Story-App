@@ -24,7 +24,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.nicelydone.submissionaplikasistoryapp.databinding.ActivityUploadBinding
-import com.nicelydone.submissionaplikasistoryapp.viewmodel.StoryListViewModel
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadState
 import com.nicelydone.submissionaplikasistoryapp.viewmodel.UploadViewModel
 import dagger.hilt.android.AndroidEntryPoint

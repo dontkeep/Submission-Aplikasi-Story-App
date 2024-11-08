@@ -41,7 +41,8 @@ class StoryRemoteMediator(private val database: ItemDatabase, private val apiSer
          }
       }
       try {
-         val responseData = apiService.getAllStories("Bearer "+ token, page, state.config.pageSize)
+//         val responseData = apiService.getAllStories("Bearer "+ token, page, state.config.pageSize)
+         val responseData = apiService.getAllStories(page, state.config.pageSize)
          val stories = responseData.listStory?.map {
             StoryEntity(
                id = it?.id ?: "",

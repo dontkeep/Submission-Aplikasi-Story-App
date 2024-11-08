@@ -34,4 +34,11 @@
   <string name="error_message">Error</string>
   <string name="open_map">Open Map</string>
   <string name="use_current_location">Upload with your location</string>
+  <string name="password_format">Password Must Contain At Least 8 Characters</string>
+  <string name="email_format">Invalid Email Format</string>
+  <string name="appwidget_text">EXAMPLE</string>
+  <string name="app_widget_description">This is an app widget description</string>
+  <string name="imageview">ImageView</string>
+  <string name="make_sure_you_re_logged_in_first">Make sure you\'re logged in first!</string>
+  <string name="add_widget">Add widget</string>
 </resources>

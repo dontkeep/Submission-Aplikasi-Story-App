@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -69,10 +68,10 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style)
          )
          if (!success) {
-            Log.e("MapActivity", "Style parsing failed.")
+            Toast.makeText(this, "Style parsing failed.", Toast.LENGTH_SHORT).show()
          }
       } catch (e: Resources.NotFoundException) {
-         Log.e("MapActivity", "Can't find style. Error: ", e)
+         Toast.makeText(this, "Can't find style. Error: ", Toast.LENGTH_SHORT).show()
       }
    }
 

@@ -5,8 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.nicelydone.submissionaplikasistoryapp.model.connection.ApiServices
 import com.nicelydone.submissionaplikasistoryapp.model.connection.responses.LoginResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,13 +37,7 @@ class LoginViewModel @Inject constructor(private val storyApiServices: ApiServic
    }
 
    private fun saveSession(token: String?) {
-      val sharedPreferences = EncryptedSharedPreferences.create(
-         "session_preferences",
-         MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-         appContext,
-         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-      )
+      val sharedPreferences = appContext.getSharedPreferences("session_preferences", Context.MODE_PRIVATE)
       val editor = sharedPreferences.edit()
       editor.putString("token", token)
       editor.putBoolean("IS_LOGGED_IN", true)

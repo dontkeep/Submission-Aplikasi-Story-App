@@ -1,7 +1,6 @@
 package com.nicelydone.submissionaplikasistoryapp.viewmodel
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -49,7 +48,8 @@ class StoryListViewModel @Inject constructor(
    fun fetchStoriesWithLocation() {
       viewModelScope.launch {
          try {
-            val response = apiServices.getStoriesWithLocation("Bearer $token")
+            val response = apiServices.getStoriesWithLocation()
+//            val response = apiServices.getStoriesWithLocation("Bearer $token")
             if (response.isSuccessful) {
                _storyWithLocation.postValue(response.body()?.listStory)
             } else {

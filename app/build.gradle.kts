@@ -1,7 +1,7 @@
 plugins {
    alias(libs.plugins.android.application)
    alias(libs.plugins.jetbrains.kotlin.android)
-   id("kotlin-kapt")
+   id("com.google.devtools.ksp")
    id("com.google.dagger.hilt.android")
    id("kotlin-parcelize")
 }
@@ -22,6 +22,7 @@ android {
 
    buildFeatures {
       viewBinding = true
+      buildConfig = true
    }
 
    buildTypes {
@@ -31,6 +32,10 @@ android {
             getDefaultProguardFile("proguard-android-optimize.txt"),
             "proguard-rules.pro"
          )
+         buildConfigField("String", "BASE_URL", "\"https://story-api.dicoding.dev/v1/\"")
+      }
+      debug {
+         buildConfigField("String", "BASE_URL", "\"https://story-api.dicoding.dev/v1/\"")
       }
    }
 
@@ -58,7 +63,7 @@ dependencies {
    implementation(libs.androidx.camera.extensions)
 
    implementation(libs.hilt.android)
-   kapt(libs.hilt.android.compiler)
+   ksp(libs.hilt.android.compiler)
    implementation(libs.androidx.activity.ktx)
 
    implementation(libs.glide)
@@ -71,7 +76,7 @@ dependencies {
    implementation(libs.lottie)
 
    implementation(libs.androidx.room.runtime)
-   kapt(libs.androidx.room.compiler)
+   ksp(libs.androidx.room.compiler)
    implementation(libs.androidx.room.paging)
 
    implementation(libs.androidx.paging.runtime.ktx)

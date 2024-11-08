@@ -11,7 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DetailActivity : AppCompatActivity() {
    private lateinit var binding: ActivityDetailBinding
-   val detailViewModel: DetailViewModel by viewModels()
+   private val detailViewModel: DetailViewModel by viewModels()
 
    override fun onCreate(savedInstanceState: Bundle?) {
       super.onCreate(savedInstanceState)

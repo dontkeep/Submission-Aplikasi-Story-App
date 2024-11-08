@@ -1,17 +1,18 @@
 package com.nicelydone.submissionaplikasistoryapp.ui
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.nicelydone.submissionaplikasistoryapp.databinding.ActivitySplashBinding
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
    private lateinit var binding : ActivitySplashBinding
 
@@ -24,13 +25,7 @@ class SplashActivity : AppCompatActivity() {
       lifecycleScope.launch {
          delay(2000)
          try {
-            val sharedPreferences = EncryptedSharedPreferences.create(
-               "session_preferences",
-               MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-               applicationContext,
-               EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-               EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
+            val sharedPreferences= getSharedPreferences("session_preferences", Context.MODE_PRIVATE)
             val isLoggedIn = sharedPreferences.getBoolean("IS_LOGGED_IN", false)
 
             if (isLoggedIn) {

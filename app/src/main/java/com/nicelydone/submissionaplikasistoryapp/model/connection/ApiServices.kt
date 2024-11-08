@@ -44,14 +44,14 @@ interface ApiServices {
 
    @GET("stories")
    suspend fun getAllStories(
-      @Header("Authorization") token: String,
+//      @Header("Authorization") token: String,
       @Query("page") page: Int,
       @Query("size") size: Int
    ): StoryResponse
 
    @GET("stories")
    suspend fun getStoriesWithLocation(
-      @Header("Authorization") token: String,
+//      @Header("Authorization") token: String,
       @Query("location") location: Int = 1,
       @Query("size") size: Int = 30
    ): Response<StoryResponse>

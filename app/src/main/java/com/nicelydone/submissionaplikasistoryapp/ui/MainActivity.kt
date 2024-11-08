@@ -1,5 +1,6 @@
 package com.nicelydone.submissionaplikasistoryapp.ui
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,12 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.nicelydone.submissionaplikasistoryapp.R
 import com.nicelydone.submissionaplikasistoryapp.databinding.ActivityMainBinding
-import com.nicelydone.submissionaplikasistoryapp.helper.MainActivityModule
-import com.nicelydone.submissionaplikasistoryapp.helper.MainActivityModule.provideSharedPreferencesForZeroArgConstructor
 import com.nicelydone.submissionaplikasistoryapp.helper.MyApplication
 import com.nicelydone.submissionaplikasistoryapp.ui.adapter.LoadingStateAdapter
 import com.nicelydone.submissionaplikasistoryapp.ui.adapter.StoryListAdapter
@@ -29,8 +26,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor val sharedPreferences: SharedPreferences) : AppCompatActivity() {
-   constructor() : this(sharedPreferences = provideSharedPreferencesForZeroArgConstructor(MyApplication.appContext))
+class MainActivity @Inject constructor(private val sharedPreferences: SharedPreferences) : AppCompatActivity() {
+   constructor() : this(MyApplication.appContext.getSharedPreferences("session_preferences", Context.MODE_PRIVATE))
 
    private lateinit var binding: ActivityMainBinding
    private lateinit var adapter: StoryListAdapter
@@ -115,15 +112,8 @@ class MainActivity @Inject constructor(@MainActivityModule.ZeroArgConstructor va
             true
          }
          R.id.logoutButton -> {
-            val sharedPreferences = EncryptedSharedPreferences.create(
-               "session_preferences",
-               MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-               applicationContext,
-               EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-               EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            )
             val editor = sharedPreferences.edit()
-            editor.remove("token") // Clear the token
+            editor.remove("token")
             editor.putBoolean("IS_LOGGED_IN", false)
             editor.apply()
             val intent = Intent(this, LoginActivity::class.java)

@@ -42,10 +42,12 @@ class LoginActivity : AppCompatActivity() {
       }
 
       loginViewModel.isLoading.observe(this) {
-         binding.loadingAnimation.visibility = if (it) View.VISIBLE else View.GONE
-         binding.emailEditTextLayout.isEnabled = !it
-         binding.passwordEditTextLayout.isEnabled = !it
-         binding.loginButton.isEnabled = !it
+         with(binding){
+            loadingAnimation.visibility = if (it) View.VISIBLE else View.GONE
+            emailEditTextLayout.isEnabled = !it
+            passwordEditTextLayout.isEnabled = !it
+            loginButton.isEnabled = !it
+         }
       }
 
       loginViewModel.loginResult.observe(this) { result ->
