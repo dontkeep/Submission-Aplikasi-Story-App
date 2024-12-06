@@ -12,7 +12,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object Injection {
    @Provides
-   fun  provideApiConfig(sharedPreferences: SharedPreferences): ApiConfig {
+   fun provideApiConfig(sharedPreferences: SharedPreferences): ApiConfig {
       val token = sharedPreferences.getString("token", "") ?: ""
       return ApiConfig(token)
    }

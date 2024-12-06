@@ -11,12 +11,11 @@ import com.nicelydone.submissionaplikasistoryapp.model.room.entity.RemoteKeys
 import com.nicelydone.submissionaplikasistoryapp.model.room.entity.StoryEntity
 
 @OptIn(ExperimentalPagingApi::class)
-class StoryRemoteMediator(private val database: ItemDatabase, private val apiService: ApiServices, private val token: String) : RemoteMediator<Int, StoryEntity>() {
+class StoryRemoteMediator(private val database: ItemDatabase, private val apiService: ApiServices) : RemoteMediator<Int, StoryEntity>() {
 
    private companion object {
       const val INITIAL_PAGE_INDEX = 1
    }
-
 
    override suspend fun load(
       loadType: LoadType,

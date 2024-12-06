@@ -1,8 +1,11 @@
 package com.nicelydone.submissionaplikasistoryapp.custom
 
 import android.content.Context
+import android.text.InputType
 import android.util.AttributeSet
+import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import com.nicelydone.submissionaplikasistoryapp.R
 
 class MyEditText @JvmOverloads constructor(
